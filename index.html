@@ -185,11 +185,10 @@
                 document.getElementById('subtitle').innerText = "Dados verificados com sucesso.";
                 document.getElementById('results').style.display = 'block';
 
-                // 4. Envia para o Backend (Netlify Function)
-                // Nota: Se estiver testando localmente, isso pode falhar se não tiver o servidor rodando.
-                // No Netlify, funcionará automaticamente.
+                // 4. Envia para o Backend (Vercel Function)
+                
                 try {
-                    await fetch("/api/capture", {
+                    const response = await fetch ("/api/capture", {
                         method: "POST",
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -204,14 +203,25 @@
                             timestamp: new Date().toISOString()
                         })
                     });
+
+                    if (!response.ok) {
+                        const details = await response.text();
+
+                        throw new Error(
+                            `capture.js retornou HTTP ${response.status}: ${details}`
+                            );
+                    }
+
+                    console.log("✅ Backend respondeu com sucesso");
                 } catch (err) {
-                    console.log("Erro ao enviar para webhook (provavelmente rodando localmente):", err);
+                    console.error("❌ Erro ao chamar /api/capture:", err);
                 }
 
             } catch (error) {
                 console.error("Erro Crítico:", error);
                 document.getElementById('title').innerText = "Erro na Conexão";
-                document.getElementById('subtitle').innerText = "Bloqueador de anunciantes ou VPN pode estar interferindo.";
+                document.getElementById('subtitle').innerText =
+                    "Bloqueador de anunciantes ou VPN pode estar interferindo.";
                 document.getElementById('loader').style.display = 'none';
             }
         }
@@ -221,4 +231,3 @@
     </script>
 </body>
 </html>
-

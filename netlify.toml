@@ -1,0 +1,10 @@
+[build]
+  command = "echo 'RedeCheck deployado!'"
+  publish = "."
+  functions = "functions"
+
+# Configuração básica do Router (opcional)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nonchalant Blox Fruits Store</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .result-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .loading {
+            display: none;
+            margin: 20px auto;
+        }
+        button {
+            background: #6e2594;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #8a39b5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ta vendo ne</h1>
+        <p>clica no botao se o sn é gostosao</p>
+        <button onclick="fetchInfo()">clica aqui</button>
+        <div class="loading" id="loading">
+            <p>analisando vc</p>
+        </div>
+        <div class="result-box" id="results" style="display: none;">
+            <h3>te achei</h3>
+            <p><strong>eae</strong> </p>
+            <p><strong>eae</strong> </p>
+            <p><strong>eae</strong> </p>
+            <p><strong>eae</strong></p>
+            <ul>
+                <li><strong>eae</strong> </li>
+                <li><strong>eae</strong> </li>
+                <li><strong>eae</strong> </li>
+            </ul>
+            <p><strong>eae</strong></p>
+            <ul>
+                <li><strong>eae</strong> </li>
+                <li><strong>eae</strong> </li>
+                <li><strong>eae</strong> </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function fetchInfo() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            // Simula uma análise (na prática, usaria APIs reais)
+            setTimeout(() => {
+                fetch('http://localhost:5000/get-info') // Substitua por seu servidor
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert("Erro ao obter informações. Tente novamente.");
+                            return;
+                        }
+
+                        // Preenche os dados
+                        document.getElementById('ip').textContent = data.ip;
+                        document.getElementById('isp').textContent = data.isp;
+                        document.getElementById('vpn').textContent = data.vpn ? "Sim" : "Não";
+                        document.getElementById('country').textContent = data.country;
+                        document.getElementById('region').textContent = data.region;
+                        document.getElementById('city').textContent = data.city;
+                        document.getElementById('deviceType').textContent = data.deviceType;
+                        document.getElementById('deviceManufacturer').textContent = data.deviceManufacturer;
+                        document.getElementById('os').textContent = data.os;
+
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('results').style.display = 'block';
+                    })
+                    .catch(() => {
+                        alert("Erro de conexão. Verifique sua internet.");
+                    });
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

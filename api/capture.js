@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // Cole sua webhook aqui
   const webhook = process.env.DISCORD_WEBHOOK_URL;
 
     if (!webhook) {
@@ -15,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const data = JSON.parse(event.body);
+    const data = req.body;
     console.log('Dados recebidos:', data);
 
     const embed = {
@@ -32,7 +31,7 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString()
     };
 
-    await fetch(DISCORD_WEBHOOK, {
+    await fetch(webhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ embeds: [embed] })
@@ -40,15 +39,14 @@ export default async function handler(req, res) {
 
     console.log("✅ Dados enviados ao Discord");
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ status: "ok", sent_to: DISCORD_WEBHOOK }),
-    };
+    return res.status(200).json({
+      status: "ok"
+    });
   } catch (err) {
-    console.error("❌ Erro ao processar requisição:", err);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Internal Server Error", detail: err.message }),
-    };
+    console.error("Erro:", err);
+
+    return res.status(500).json({
+      error: "Internal Server Error"
+    });
   }
-};
+}

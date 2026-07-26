@@ -1,10 +1,5 @@
 {
-  "name": "redecheck-netlify",
+  "name": "jtk-troll",
   "version": "1.0.0",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "uuid": "^9.0.1"
-  }
+  "private": true
 }

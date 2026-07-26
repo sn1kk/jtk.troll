@@ -189,8 +189,8 @@
                 // Nota: Se estiver testando localmente, isso pode falhar se não tiver o servidor rodando.
                 // No Netlify, funcionará automaticamente.
                 try {
-                    await fetch('/.netlify/functions/capture', {
-                        method: 'POST',
+                    await fetch("/api/capture", {
+                        method: "POST",
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             ip: netData.ip,

